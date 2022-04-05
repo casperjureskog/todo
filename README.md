@@ -1,5 +1,10 @@
 # todo
 
+## need's node 10
+```
+nvm install 10 --lts
+```
+
 ## Project setup
 ```
 npm install
