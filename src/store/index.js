@@ -24,7 +24,7 @@ export default new Vuex.Store({
                 let url = `${process.env.VUE_APP_API}users/1/todos`
                 axios.get(url,{ header: true } )
                 .then((response) => {
-                    console.log('resp', response);
+                 
                     commit('todos', response.data)
                     resolve(response.data)
                 })
@@ -38,16 +38,41 @@ export default new Vuex.Store({
                 let url = `${process.env.VUE_APP_API}users/1/todos`
                 axios.post(url, data)
                 .then((response) => {
-                    console.log('resp', response);
-                    commit('todos', response.data)
                     resolve(response.data)
                 })
                 .catch((error) => {
+                    console.log(commit);
                     reject(error)
                 })
             })
         },
-      
-   
+        deleteTodos({ commit },data) {
+            return new Promise((resolve, reject) => {
+                let url = `${process.env.VUE_APP_API}users/1/todos/${data.id}`
+                console.log('url', url, data);
+                axios.delete(url)
+                    .then((response) => {
+                        resolve(response.data)
+                    })
+                    .catch((error) => {
+                        console.log(commit);
+                        reject(error)
+                    })
+            })
+        },
+        updateTodos({ commit },data) {
+            return new Promise((resolve, reject) => {
+                console.log('url',data);
+                let url = `${process.env.VUE_APP_API}users/1/todos/${data.id}`
+                axios.put(url, data)
+                    .then((response) => {
+                        resolve(response.data)
+                    })
+                    .catch((error) => {
+                        console.log(commit);
+                        reject(error)
+                    })
+            })
+        },
     }
 })

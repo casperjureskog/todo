@@ -48,6 +48,7 @@ $colors: map-merge(
 		"gray-light": 	$gray-200,
 		"gray": 		$gray-600,
 		"gray-dark": 	$gray-800,
+        "gray-darker": 	$gray-900,
 		"black": 		$black,
 		"n-white":		$n-white
 	),
@@ -90,6 +91,7 @@ $theme-colors: map-merge(
 		"n-white":			$n-white,
 		"yellow":			rgba($yellow, 0.9),
 		"hero-trans":		rgba($black, 0.5),
+        "green": 			$green,
 	),
 	$theme-colors
 );

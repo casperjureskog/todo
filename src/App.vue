@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-    <Todo msg="Welcome to Your Vue.js App"/>
+    <Header/>
+    <Todo/>
   </div>
 </template>
 
 <script>
 import '@/styles/main.scss'
 
-import Todo from './components/Todo.vue'
-
+import Header from './components/Header.vue'
+import Todo from './sections/Todo.vue'
 export default {
     name: 'App',
     components: {
+        Header,
         Todo
     },
     methods: {
