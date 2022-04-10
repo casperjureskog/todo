@@ -5,7 +5,6 @@
                 <b-col cols="12" md="4" class="text-center text-md-left pt-3">
                     <h1 class="text-primary">To do app</h1>
                 </b-col>
-            
                 <b-col cols="12" md="auto" class="pt-3 text-right" :class="visible? 'bg-black' : ''">
                         <b-input-group  class="mt-2">
                         <b-form-input v-model="search"  placeholder="search" @change="$emit('search', search)"></b-form-input>
@@ -43,7 +42,6 @@
                         </b-col>
                         <b-col cols="6" class="py-2">
                             <b-button @click="onSubmit(title, content, date, time)" :disabled="title === null" variant="primary">Submit</b-button>
-                            <span v-if="error" class="text-danger"> error  {{error}}</span>
                         </b-col>
                         <b-col cols="6" class="text-right py-2">
                             <b-button @click="cancelForm()"  variant="primary">Cansel</b-button>
@@ -80,11 +78,11 @@
                     this.time = null
                 })
                 .then(() =>{
+                    this.$emit('toast', 'success', 'DONE !', 'To do Created')
                     return  this.$store.dispatch('getTodos')
                 })
-                .catch((error) => {
-                    this.error = error
-                    console.log('error', error);
+                .catch(() => {
+                   this.$emit('toast', 'danger', 'Warning!', 'To do where not created!')
                 })
             },
             cancelForm() {

@@ -3,7 +3,7 @@
         <b-container>
             <b-row class="py-3 d-flex justify-content-end">
                 <b-col cols="auto">
-                    <b-button   @click="editModel = todo" 
+                    <b-button   @click="editModel = _.cloneDeep(todo)" 
                                 v-if="editModel.id !== todo.id" 
                                 class="btn-plain">
                         <b-icon icon="pencil-square" font-scale="1" variant="green"/>
@@ -76,23 +76,37 @@
             }
         },
         computed: {
-           
+            todos() {
+                return this.$store.getters.todos
+            },
         },
         props: {
-             todo: Object,
+            todo: Object,
+            todo_key: Number
         },
         methods: {
-            uppdateTodo(data, date, time) {
-                this.$store.dispatch('updateTodos', {title: data.title, content: data.content, do_date: date+':'+time, id: data.id})
+            uppdateTodo(input, date, time) {
+                const data =    {
+                                    title: input.title, 
+                                    content: input.content, 
+                                    do_date: date && time? new Date(date+':'+time) : null, 
+                                    id: input.id
+                                }
+                this.$store.dispatch('updateTodos', data)
                 .then(() =>{
-                    return  this.$store.dispatch('getTodos')
+                    this.todos[_.findIndex(this.todos, {id: data.id})].title = data.title
+                    this.todos[_.findIndex(this.todos, {id: data.id})].content = data.content
+                    this.todos[_.findIndex(this.todos, {id: data.id})].do_date = data.do_date
+                    return
+                    
+                    // return  this.$store.dispatch('getTodos')
                 })
-                .then(response => {
+                .then(() => {
                     this.editModel = false
-                    console.log('rep', response);
+                    this.$emit('toast', 'success', 'DONE !', 'To do updated')
                 })
                 .catch(() => {
-                    this.error = 'channel'
+                     this.$emit('toast', 'danger', 'Warning!', 'To do did not update!')
                 })
             },
             deleteTodo(id) {
@@ -100,11 +114,11 @@
                 .then(() =>{
                     return  this.$store.dispatch('getTodos')
                 })
-                .then(response => {
-                    console.log('rep', response);
+                .then(() => {
+                    this.$emit('toast', 'success', 'DONE !', 'To do deleted')
                 })
                 .catch(() => {
-                    this.error = 'channel'
+                   this.$emit('toast', 'danger', 'Warning!', 'To do did not delete!')
                 })
             },
         },

@@ -5,14 +5,15 @@
                 <b-tabs pills card vertical class="p-0" v-model="tabIndex">
                     <b-tab v-for="(todo , key) in resultQuery" :key="key">
                         <template #title>
-                            <h5 class="p-2 text-uppercase text-ellipsis">{{todo.title}}</h5>
-                            <p class=" px-2 small-date text-gray mb-0">{{$moment.utc(todo.do_date ).format('MMMM Do YYYY, HH:mm:ss')}}</p>
+                            <h5 class="p-2 text-uppercase text-ellipsis" :class="action(todo.do_date) === 'PAST'? 'text-gray' : ''">{{todo.title}}</h5>
+                            <p class=" px-2 small-date text-gray mb-0 d-inline">{{$moment.utc(todo.do_date ).format('YYYY:MM:DD-HH:mm:ss')}}</p>
+                            <p class="d-inline" :class="action(todo.do_date) === 'PAST'? 'text-danger' : 'text-green'">{{action(todo.do_date)}}</p>
                             <div class="d-lg-none bg-dark p-3 pb-5" v-if="tabIndex === key">
-                                <Content :todo="todo"  v-if="tabIndex === key"/>
+                                <Content :todo="todo" v-if="tabIndex === key"/>
                             </div>
                         </template>
                         <p class="d-none d-lg-block">
-                            <Content :todo="todo"/>
+                            <Content :todo="todo" @toast="toastEmit"/>
                         </p>
                     </b-tab>
                 </b-tabs>
@@ -32,6 +33,7 @@
         name: 'ToDo',
         data() {
             return {
+                today: new Date(),
                 tabIndex: 1,
                 editModel: false,
                 title: null,
@@ -40,6 +42,9 @@
         },
         components: {
             Content
+        },
+        props: {
+             search: [String, Number],
         },
         computed: {
             todos() {
@@ -59,35 +64,18 @@
             }
 
         },
-        props: {
-             search: [String, Number],
-        },
          methods: {
-            uppdateTodo(data) {
-                this.$store.dispatch('updateTodos', {title: data.title, content: data.content, do_date: data.do_date, id: data.id})
-                .then(() =>{
-                    return  this.$store.dispatch('getTodos')
-                })
-                .then(response => {
-                    this.editModel = false
-                    console.log('rep', response);
-                })
-                .catch(() => {
-                    this.error = 'channel'
-                })
+            toastEmit(type, title, text) {
+                this.$emit('toast', type, title, text)
             },
-            deleteTodo(id) {
-                this.$store.dispatch('deleteTodos', {id: id})
-                .then(() =>{
-                    return  this.$store.dispatch('getTodos')
-                })
-                .then(response => {
-                    console.log('rep', response);
-                })
-                .catch(() => {
-                    this.error = 'channel'
-                })
-            },
+            action(date) {
+                if (this.$moment(date).isSame(this.today, 'day')) {
+                    return 'TODAY'
+                } else if (this.$moment(date).isBefore(this.today, 'day')) {
+                    return 'PAST'
+                }
+
+            }
         },
     }
 </script>

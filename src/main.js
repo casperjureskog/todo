@@ -5,13 +5,16 @@ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import store from './store'
 import VueMoment from 'vue-moment'
 import moment from 'moment-timezone'
+import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
+
+// name is optional
+Vue.use(VueLodash, { lodash: lodash })
 
 Vue.use(VueMoment, {
     moment,
 })
 
-// Vue.use(require('vue-moment'));
-// createApp(App).use(store).mount('#app')
 Vue.use(Vuex)
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)

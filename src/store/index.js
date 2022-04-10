@@ -15,6 +15,9 @@ export default new Vuex.Store({
     },
     mutations: {
         todos: (state, data) => {
+            data = _.sortBy(data, function (todo) {
+                return new Date(todo.do_date);
+            });
             state.todos = data
         }
     },
@@ -49,7 +52,6 @@ export default new Vuex.Store({
         deleteTodos({ commit },data) {
             return new Promise((resolve, reject) => {
                 let url = `${process.env.VUE_APP_API}users/1/todos/${data.id}`
-                console.log('url', url, data);
                 axios.delete(url)
                     .then((response) => {
                         resolve(response.data)
@@ -62,7 +64,6 @@ export default new Vuex.Store({
         },
         updateTodos({ commit },data) {
             return new Promise((resolve, reject) => {
-                console.log('url',data);
                 let url = `${process.env.VUE_APP_API}users/1/todos/${data.id}`
                 axios.put(url, data)
                     .then((response) => {

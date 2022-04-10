@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Header @search="setSearch"/>
-    <Todo :search="search"/>
+    <Header @search="setSearch" @toast="toast"/>
+    <Todo :search="search" @toast="toast"/>
   </div>
 </template>
 
@@ -24,11 +24,20 @@ export default {
         getTodos() {
             this.$store.dispatch('getTodos')
             .catch(() => {
-                this.error = 'channel'
+               this.$emit('toast', 'danger', 'Warning!', 'To do where not collected')
             })
         },
         setSearch(search) {
             this.search = search
+        },
+        toast(variant = null, title, text) {
+            this.$bvToast.toast(text, {
+                title: title,
+                toaster: 'b-toaster-bottom-right',
+                variant: variant,
+                solid: true,
+                // appendToast: append
+            })
         }
     },
     mounted() {
