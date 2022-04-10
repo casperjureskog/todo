@@ -1,97 +1,70 @@
 <template>
     <div>
-        <div class="bg-primary mb-3">
-            <b-container>
-                <b-row>
-                    <b-col cols="12" class="pt-3">
-                        <b-row>
-                            <b-col cols="4">
-                            <h5>Title</h5>
-                            </b-col>
-                            <b-col cols="5">
-                                Content
-                            </b-col>
-                            <b-col cols="1" class="text-right"> 
-                                Order
-                            </b-col>
-                        </b-row>
-                    </b-col>
-                </b-row>
-            </b-container>
-        </div>
-        <b-container>
-            <b-row>
-                <b-col cols="12" v-for="(todo , key) in todos" :key="key">
-                    <b-form>
-                        <b-row>
-                            <b-col cols="4">
-                                <span v-if="editModel.id !== todo.id">{{todo.title}} {{todo.id}}</span>
-                                <b-form-input   v-if="editModel.id === todo.id" 
-                                                v-model="editModel.title" 
-                                                placeholder="Enter title"/>
-                            </b-col>
-                            <b-col cols="5">
-                                <span v-if="editModel.id !== todo.id">{{todo.content}}</span>
-                                <b-form-textarea   id="textarea"
-                                                    v-if="editModel.id === todo.id"
-                                                    v-model="editModel.content"
-                                                    placeholder="Enter something..."
-                                                    rows="0"
-                                                    max-rows="0"/>
-                            </b-col>
-                            <b-col cols="1" class="text-right"> 
-                                {{key}}
-                            </b-col>
-                            <b-col cols="1" class="text-right text-green"> 
-                                <b-button   @click="uppdateTodo(editModel.title, editModel.content, editModel.id)"
-                                            v-if="editModel.id === todo.id"
-                                            class="btn-plain">
-                                    <b-icon icon="check-square" font-scale="1" variant="green"/>
-                                </b-button>
-                                 <b-button   @click="editModel = false"
-                                            v-if="editModel.id === todo.id"
-                                            class="btn-plain ml-2">
-                                    <b-icon icon="x-circle" font-scale="1" variant="danger"/>
-                                </b-button>
-                                <b-button   @click="editModel = todo" 
-                                            v-if="editModel.id !== todo.id" 
-                                            class="btn-plain">
-                                    <b-icon icon="pencil-square" font-scale="1" variant="green"/>
-                                </b-button>
-                            </b-col>
-                            <b-col cols="1" class="text-right"> 
-                                <b-button @click="deleteTodo(todo.id)" class="btn-plain"><b-icon icon="trash-fill" font-scale="1" variant="danger"/></b-button>
-                            </b-col>
-                        </b-row>
-                    </b-form>
-                    <hr/>
-                </b-col>
-            </b-row>
+        <b-container v-if="resultQuery">
+            <b-card no-body>
+                <b-tabs pills card vertical class="p-0" v-model="tabIndex">
+                    <b-tab v-for="(todo , key) in resultQuery" :key="key">
+                        <template #title>
+                            <h5 class="p-2 text-uppercase text-ellipsis">{{todo.title}}</h5>
+                            <p class=" px-2 small-date text-gray mb-0">{{$moment.utc(todo.do_date ).format('MMMM Do YYYY, HH:mm:ss')}}</p>
+                            <div class="d-lg-none bg-dark p-3 pb-5" v-if="tabIndex === key">
+                                <Content :todo="todo"  v-if="tabIndex === key"/>
+                            </div>
+                        </template>
+                        <p class="d-none d-lg-block">
+                            <Content :todo="todo"/>
+                        </p>
+                    </b-tab>
+                </b-tabs>
+            </b-card>
         </b-container>
+        <b-row v-else class="vh-100 d-flex flex-wrap align-content-center"> 
+            <b-col  cols="12" class="text-center ">
+                <b-icon icon="three-dots" animation="cylon" font-scale="8" variant="primary"/>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
 <script>
+    import Content from '../components/Content.vue'
     export default {
         name: 'ToDo',
         data() {
             return {
+                tabIndex: 1,
                 editModel: false,
                 title: null,
                 text: null
             }
         },
+        components: {
+            Content
+        },
         computed: {
             todos() {
                 return this.$store.getters.todos
             },
-        },
-        props: {
+            resultQuery() {
+                if (this.search && this.todos) {
+                    return this.todos.filter(item => {
+                        return this.search
+                        .toLowerCase()
+                        .split(" ")
+                        .every(v => item.title.toLowerCase().includes(v));
+                    });
+                } else {
+                    return this.todos;
+                }
+            }
 
         },
+        props: {
+             search: [String, Number],
+        },
          methods: {
-            uppdateTodo(title, content, id) {
-                this.$store.dispatch('updateTodos', {title: title, content: content, id: id})
+            uppdateTodo(data) {
+                this.$store.dispatch('updateTodos', {title: data.title, content: data.content, do_date: data.do_date, id: data.id})
                 .then(() =>{
                     return  this.$store.dispatch('getTodos')
                 })

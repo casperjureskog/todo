@@ -33,7 +33,6 @@ $red:			#F06868;
 $orange:		#FF910F;
 $yellow:		#FCC00C; // creo yellow
 $green:			#A6CD86; // creo green
-$n-white: 		#DCD6C9;
 $colors: ();
 $colors: map-merge(
 	(
@@ -50,7 +49,6 @@ $colors: map-merge(
 		"gray-dark": 	$gray-800,
         "gray-darker": 	$gray-900,
 		"black": 		$black,
-		"n-white":		$n-white
 	),
 	$colors
 );
@@ -83,12 +81,11 @@ $theme-colors: map-merge(
 		"light": 			$light,
 		"light-trans": 		rgba($light, 0.9),
 		"dark": 			$dark,
-		"dark-trans": 		rgba($dark, 0.9),
+		"dark-trans": 		rgba($dark, 0.7),
 		"gray": 			$gray,
 		"gray-trans": 		rgba($gray, 0.9),
 		"black": 			$black,
 		"black-trans": 		rgba($black, 0.9),
-		"n-white":			$n-white,
 		"yellow":			rgba($yellow, 0.9),
 		"hero-trans":		rgba($black, 0.5),
         "green": 			$green,

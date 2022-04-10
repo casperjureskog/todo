@@ -1,4 +1,7 @@
 .btn {
+    &:focus {
+        box-shadow: unset !important;
+    }
     &-plain {
         background-color: unset !important;
         border: 0 !important;

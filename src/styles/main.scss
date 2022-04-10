@@ -7,6 +7,9 @@
 // custom mixins
 @import 'header';
 @import 'button';
+@import 'tab';
+@import 'type';
+
 
 html, body {
 	background: rgb(54, 49, 49);
@@ -29,3 +32,11 @@ html, body {
 	flex-grow: 1;
 }
 
+.container {
+    @include media-breakpoint-down(lg) {
+        margin: 0;
+        max-width: unset;
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
